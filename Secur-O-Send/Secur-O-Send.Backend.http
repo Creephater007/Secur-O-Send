@@ -1,0 +1,8 @@
+@Secur_O_Send.Backend_HostAddress = http://localhost:5106
+
+### Get Weather Forecast
+
+GET {{Secur_O_Send.Backend_HostAddress}}/api/weather-forecast/get-weather-forecast
+Accept: application/json
+
+###

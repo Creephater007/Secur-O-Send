@@ -1,6 +1,0 @@
-@Secur_O_Send_HostAddress = http://localhost:5106
-
-GET {{Secur_O_Send_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
