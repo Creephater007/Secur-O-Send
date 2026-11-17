@@ -1,8 +1,20 @@
 @Secur_O_Send.Backend_HostAddress = http://localhost:5106
+@authToken = YOUR_AUTH_TOKEN
 
 ### Get Weather Forecast
 
 GET {{Secur_O_Send.Backend_HostAddress}}/api/weather-forecast/get-weather-forecast
 Accept: application/json
+
+### Send Message
+
+POST {{Secur_O_Send.Backend_HostAddress}}/api/messages/send
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "message": "Hello, this is a test message!"
+}
 
 ###

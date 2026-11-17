@@ -1,13 +1,17 @@
-﻿namespace Secur_O_Send.API_Endpoints;
+﻿namespace Secur_O_Send.Backend.API_Endpoints;
 using Secur_O_Send.Backend.Attributes;
+using Secur_O_Send.Models;
 
-[APIGroup("message")]
+[APIGroup("messages")]
 public class Messaging
 {
     [APIEndpoint("POST", "/send")]
-    public static void SendMessage(string message, string recipient)
+    public static SendMessageRequest SendMessage(SendMessageRequest request)
     {
-        // Implement the logic to send a message
-        Console.WriteLine($"Message sent to {recipient}: {message}");
+        // Log the received message
+        Console.WriteLine($"Content received: {request.Message}");
+
+        // Return the same body that was received
+        return request;
     }
 }
