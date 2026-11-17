@@ -22,6 +22,4 @@ public class Message
 
     public Guid Source { get; set; } = Guid.Empty;
     public Guid Destination { get; set; } = Guid.Empty;
-
-    public override string ToString() => Content;
 }

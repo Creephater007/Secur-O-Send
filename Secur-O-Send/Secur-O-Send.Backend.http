@@ -1,5 +1,5 @@
 @Secur_O_Send.Backend_HostAddress = http://localhost:5106
-@authToken = YOUR_AUTH_TOKEN
+@authToken = uname_admin
 
 ### Get Weather Forecast
 
@@ -9,15 +9,16 @@ Accept: application/json
 ### Send Message
 
 POST {{Secur_O_Send.Backend_HostAddress}}/api/messages/send
-Authorization: Bearer {{authToken}}
+Authorization: Bearer uname_test
 Content-Type: application/json
 Accept: application/json
 
 {
-    "message": "Hello, this is a test message!"
+    "content": "Hello, this is a test message!",
+    "destination": "uname_admin"
 }
 
-###
+### Get New Messages
 
 GET {{Secur_O_Send.Backend_HostAddress}}/api/messages/get-new
 Authorization: Bearer {{authToken}}
@@ -25,6 +26,24 @@ Accept: application/json
 
 ###
 
-GET {{Secur_O_Send.Backend_HostAddress}}/api/messages/get-all
-Authorization: Bearer {{authToken}}
+POST {{Secur_O_Send.Backend_HostAddress}}/api/users/create
 Accept: application/json
+
+{
+    "username": "uname_test",
+    "passwordHash": "hashed_password",
+    "usernamePublic": true
+}
+
+###
+
+POST {{Secur_O_Send.Backend_HostAddress}}/api/users/create
+Accept: application/json
+
+{
+    "username": "uname_admin",
+    "passwordHash": "hashed_password",
+    "usernamePublic": true
+}
+
+###

@@ -56,6 +56,11 @@ public static class APIEndpointExtensions
                     {
                         paramValues[i] = context;
                     }
+                    // If parameter is IHeaderDictionary, pass the request headers
+                    else if (paramType == typeof(IHeaderDictionary))
+                    {
+                        paramValues[i] = context.Request.Headers;
+                    }
                     // Try to resolve from Dependency Injection container
                     else if (IsServiceType(paramType))
                     {
