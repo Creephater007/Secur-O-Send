@@ -18,6 +18,11 @@ public class ApplicationDbContext : DbContext
     /// </summary>
     public DbSet<Message> Messages { get; set; } = null!;
 
+    /// <summary>
+    /// Users table
+    /// </summary>
+    public DbSet<Message> Users { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

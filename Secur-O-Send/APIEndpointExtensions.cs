@@ -26,14 +26,14 @@ public static class APIEndpointExtensions
                 string route = $"/api/{group.Route.Trim('/')}/{endpoint.Route.TrimStart('/')}";
 
                 // Create a RequestDelegate that wraps the endpoint method
-                RequestDelegate requestDelegate = CreateRequestDelegate(method);
+                RequestDelegate requestDelegate = CreateRequestDelegate(method, app.Services);
 
                 app.MapMethods(route, new[] { endpoint.Method }, requestDelegate);
             }
         }
     }
 
-    private static RequestDelegate CreateRequestDelegate(MethodInfo method)
+    private static RequestDelegate CreateRequestDelegate(MethodInfo method, IServiceProvider serviceProvider)
     {
         return async context =>
         {
@@ -55,6 +55,18 @@ public static class APIEndpointExtensions
                     if (paramType == typeof(HttpContext))
                     {
                         paramValues[i] = context;
+                    }
+                    // Try to resolve from Dependency Injection container
+                    else if (IsServiceType(paramType))
+                    {
+                        try
+                        {
+                            paramValues[i] = context.RequestServices.GetService(paramType);
+                        }
+                        catch
+                        {
+                            paramValues[i] = null;
+                        }
                     }
                     // Otherwise, try to deserialize from JSON body
                     else
@@ -104,8 +116,49 @@ public static class APIEndpointExtensions
             catch (Exception ex)
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+
+                // Get the inner exception for more detailed error info
+                var innerException = ex.InnerException;
+                var errorMessage = ex.Message;
+
+                if (innerException != null)
+                {
+                    errorMessage = $"{ex.Message} - Inner: {innerException.Message}";
+                }
+
+                Console.WriteLine($"Endpoint Error: {errorMessage}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+                await context.Response.WriteAsJsonAsync(new { error = errorMessage });
             }
         };
+    }
+
+    /// <summary>
+    /// Determines if a type is a service type that should be resolved from DI.
+    /// </summary>
+    private static bool IsServiceType(Type type)
+    {
+        // Exclude primitive types, strings, and common types
+        if (type.IsPrimitive || type == typeof(string) || type == typeof(Guid))
+            return false;
+
+        // Exclude ValueTypes (structs)
+        if (type.IsValueType)
+            return false;
+
+        // Only allow interfaces or classes from specific namespaces that are services
+        var isFromDataNamespace = type.FullName?.Contains("Secur_O_Send.Backend.Data") ?? false;
+
+        if (isFromDataNamespace)
+            return true;
+
+        // For other classes, only inject if they're not model classes
+        if (type.IsClass && type.FullName?.Contains("Secur_O_Send.Models") == false)
+        {
+            return type.IsInterface;
+        }
+
+        return false;
     }
 }

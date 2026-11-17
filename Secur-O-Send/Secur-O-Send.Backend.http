@@ -18,3 +18,13 @@ Accept: application/json
 }
 
 ###
+
+GET {{Secur_O_Send.Backend_HostAddress}}/api/messages/get-new
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+###
+
+GET {{Secur_O_Send.Backend_HostAddress}}/api/messages/get-all
+Authorization: Bearer {{authToken}}
+Accept: application/json
